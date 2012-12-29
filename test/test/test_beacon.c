@@ -62,27 +62,26 @@ void test_beacon_exec_build_msg_bytes(void) {
 
 
 void test_beacon_send_health_data(void) {
-    enum {EXEC_MORSE = 0x10};
-    unsigned char health_data[5];
+    unsigned char health_buf[5];
+    int health_buf_size;
 
-    char cmd_buffer[5];
     I2CDCTL = 0;
     I2CDCTL &= ~I2CBB;
     I2CIFG = 0xff;
     I2CWriteInit_Expect();
 
-    collect_health_data(health_data);
-    build_msg_bytes(cmd_buffer, EXEC_MORSE, health_data, sizeof health_data);
-    Beacon_write(cmd_buffer, 5);
-    TEST_ASSERT_EQUAL(0x0a, health_data[0]);
-    TEST_ASSERT_EQUAL(0x0a, health_data[1]);
-    TEST_ASSERT_EQUAL(0x0a, health_data[2]);
-    TEST_ASSERT_EQUAL(0x0b, health_data[3]);
-    TEST_ASSERT_EQUAL(cmd_buffer[4], I2CBuffer[0]);
-    TEST_ASSERT_EQUAL(cmd_buffer[3], I2CBuffer[1]);
-    TEST_ASSERT_EQUAL(cmd_buffer[2], I2CBuffer[2]);
-    TEST_ASSERT_EQUAL(cmd_buffer[1], I2CBuffer[3]);
-    TEST_ASSERT_EQUAL(cmd_buffer[0], I2CBuffer[4]);
+    health_buf_size = get_health_data(health_buf);
+    Beacon_send_health_data(&health_buf, health_buf_size);
+
+    TEST_ASSERT_EQUAL(0x0a, health_buf[0]);
+    TEST_ASSERT_EQUAL(0x0a, health_buf[1]);
+    TEST_ASSERT_EQUAL(0x0a, health_buf[2]);
+    TEST_ASSERT_EQUAL(0x0b, health_buf[3]);
+    TEST_ASSERT_EQUAL(health_buf[3], I2CBuffer[0]);
+    TEST_ASSERT_EQUAL(health_buf[2], I2CBuffer[1]);
+    TEST_ASSERT_EQUAL(health_buf[1], I2CBuffer[2]);
+    TEST_ASSERT_EQUAL(health_buf[0], I2CBuffer[3]);
+    TEST_ASSERT_EQUAL(EXEC_MORSE, I2CBuffer[4]);
 }
 
 

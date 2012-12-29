@@ -9,3 +9,5 @@ void Beacon_ioctl(void);
 void Beacon_read(void);
 void Beacon_write(char* cmd, uint8_t buf_size);
 void Beacon_close(void);
+
+enum {EXEC_MORSE = 0x10};

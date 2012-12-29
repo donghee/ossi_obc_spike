@@ -1,6 +1,6 @@
 #include "beacon.h"
 
-int collect_health_data(uint8_t* data)
+int get_health_data(uint8_t* data)
 {
    uint16_t temp = 0x0a0a;
    uint16_t temp2 = 0x0a0b;
@@ -8,6 +8,7 @@ int collect_health_data(uint8_t* data)
    data[1] = (temp) & 0xff; 
    data[2] = (temp2 >> 8) & 0xff; 
    data[3] = (temp2) & 0xff; 
+   return 4; // TODO: sizeof data
 }
 int build_msg_bytes(uint8_t* cmd_buf, uint8_t cmd, const uint8_t* buf, int buf_size)
 {
@@ -56,6 +57,13 @@ void Beacon_read(void) {}
 void Beacon_write(char* cmd, uint8_t buf_size)
 {
     I2C_write(cmd, buf_size);
+}
+
+void Beacon_send_health_data(uint8_t* health_buf, int health_buf_size )
+{
+    char cmd_buf[5];
+    build_msg_bytes(cmd_buf, EXEC_MORSE, health_buf, health_buf_size);
+    Beacon_write(cmd_buf, 5);
 }
 
 void Beacon_close()

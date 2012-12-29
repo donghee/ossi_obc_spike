@@ -119,13 +119,11 @@ void test_beacon_exec_build_msg_bytes(void) {
 
 void test_beacon_send_health_data(void) {
 
-    enum {EXEC_MORSE = 0x10};
+    unsigned char health_buf[5];
 
-    unsigned char health_data[5];
+    int health_buf_size;
 
 
-
-    char cmd_buffer[5];
 
     I2CDCTL = 0;
 
@@ -133,32 +131,32 @@ void test_beacon_send_health_data(void) {
 
     I2CIFG = 0xff;
 
-    I2CWriteInit_CMockExpect(72);
+    I2CWriteInit_CMockExpect(71);
 
 
 
-    collect_health_data(health_data);
+    health_buf_size = get_health_data(health_buf);
 
-    build_msg_bytes(cmd_buffer, EXEC_MORSE, health_data, sizeof health_data);
+    Beacon_send_health_data(&health_buf, health_buf_size);
 
-    Beacon_write(cmd_buffer, 5);
 
-    UnityAssertEqualNumber((_U_SINT)((0x0a)), (_U_SINT)((health_data[0])), (((void *)0)), (_U_UINT)77, UNITY_DISPLAY_STYLE_INT);
 
-    UnityAssertEqualNumber((_U_SINT)((0x0a)), (_U_SINT)((health_data[1])), (((void *)0)), (_U_UINT)78, UNITY_DISPLAY_STYLE_INT);
+    UnityAssertEqualNumber((_U_SINT)((0x0a)), (_U_SINT)((health_buf[0])), (((void *)0)), (_U_UINT)76, UNITY_DISPLAY_STYLE_INT);
 
-    UnityAssertEqualNumber((_U_SINT)((0x0a)), (_U_SINT)((health_data[2])), (((void *)0)), (_U_UINT)79, UNITY_DISPLAY_STYLE_INT);
+    UnityAssertEqualNumber((_U_SINT)((0x0a)), (_U_SINT)((health_buf[1])), (((void *)0)), (_U_UINT)77, UNITY_DISPLAY_STYLE_INT);
 
-    UnityAssertEqualNumber((_U_SINT)((0x0b)), (_U_SINT)((health_data[3])), (((void *)0)), (_U_UINT)80, UNITY_DISPLAY_STYLE_INT);
+    UnityAssertEqualNumber((_U_SINT)((0x0a)), (_U_SINT)((health_buf[2])), (((void *)0)), (_U_UINT)78, UNITY_DISPLAY_STYLE_INT);
 
-    UnityAssertEqualNumber((_U_SINT)((cmd_buffer[4])), (_U_SINT)((I2CBuffer[0])), (((void *)0)), (_U_UINT)81, UNITY_DISPLAY_STYLE_INT);
+    UnityAssertEqualNumber((_U_SINT)((0x0b)), (_U_SINT)((health_buf[3])), (((void *)0)), (_U_UINT)79, UNITY_DISPLAY_STYLE_INT);
 
-    UnityAssertEqualNumber((_U_SINT)((cmd_buffer[3])), (_U_SINT)((I2CBuffer[1])), (((void *)0)), (_U_UINT)82, UNITY_DISPLAY_STYLE_INT);
+    UnityAssertEqualNumber((_U_SINT)((health_buf[3])), (_U_SINT)((I2CBuffer[0])), (((void *)0)), (_U_UINT)80, UNITY_DISPLAY_STYLE_INT);
 
-    UnityAssertEqualNumber((_U_SINT)((cmd_buffer[2])), (_U_SINT)((I2CBuffer[2])), (((void *)0)), (_U_UINT)83, UNITY_DISPLAY_STYLE_INT);
+    UnityAssertEqualNumber((_U_SINT)((health_buf[2])), (_U_SINT)((I2CBuffer[1])), (((void *)0)), (_U_UINT)81, UNITY_DISPLAY_STYLE_INT);
 
-    UnityAssertEqualNumber((_U_SINT)((cmd_buffer[1])), (_U_SINT)((I2CBuffer[3])), (((void *)0)), (_U_UINT)84, UNITY_DISPLAY_STYLE_INT);
+    UnityAssertEqualNumber((_U_SINT)((health_buf[1])), (_U_SINT)((I2CBuffer[2])), (((void *)0)), (_U_UINT)82, UNITY_DISPLAY_STYLE_INT);
 
-    UnityAssertEqualNumber((_U_SINT)((cmd_buffer[0])), (_U_SINT)((I2CBuffer[4])), (((void *)0)), (_U_UINT)85, UNITY_DISPLAY_STYLE_INT);
+    UnityAssertEqualNumber((_U_SINT)((health_buf[0])), (_U_SINT)((I2CBuffer[3])), (((void *)0)), (_U_UINT)83, UNITY_DISPLAY_STYLE_INT);
+
+    UnityAssertEqualNumber((_U_SINT)((EXEC_MORSE)), (_U_SINT)((I2CBuffer[4])), (((void *)0)), (_U_UINT)84, UNITY_DISPLAY_STYLE_INT);
 
 }
