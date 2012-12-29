@@ -1,0 +1,25 @@
+---
+:source:
+  :path: test
+  :file: test_beacon.c
+:successes:
+- :test: test_beacon_init
+  :line: 17
+  :message: ''
+- :test: test_beacon_write
+  :line: 28
+  :message: ''
+- :test: test_beacon_exec_build_msg_bytes
+  :line: 45
+  :message: ''
+- :test: test_beacon_send_health_data
+  :line: 64
+  :message: ''
+:failures: []
+:ignores: []
+:counts:
+  :total: 4
+  :passed: 4
+  :failed: 0
+  :ignored: 0
+:stdout: []
